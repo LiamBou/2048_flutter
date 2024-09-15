@@ -200,27 +200,31 @@ class _BoardWidgetState extends State<BoardWidget> {
               }
             }
           },
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ResetWidget(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 1100),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: ResetWidget(
                       resetGame: () => {
                             _resetBoard(),
                             scoreModel.resetScore(),
                           }),
-                ],
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: colorBoard,
                 ),
-                alignment: Alignment.center,
-                child: boardView(),
-              ),
-            ],
+                Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: colorBoard,
+                  ),
+                  constraints: const BoxConstraints(maxWidth: 1100),
+                  alignment: Alignment.center,
+                  child: Container(
+                      constraints: const BoxConstraints(maxWidth: 1100),
+                      child: boardView()),
+                ),
+              ],
+            ),
           ),
         );
       },
