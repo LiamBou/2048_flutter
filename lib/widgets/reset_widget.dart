@@ -9,13 +9,14 @@ class ResetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          shape: const CircleBorder(),
-        ),
-        onPressed: () {
-          resetGame();
-        },
-        child: const Icon(Icons.refresh, color: colorBoard));
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        shape: const CircleBorder(),
+      ),
+      onPressed: () {
+        resetGame();
+      },
+      child: const Icon(Icons.refresh, color: colorBoard, size: 30),
+    );
   }
 }

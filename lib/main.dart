@@ -2,13 +2,17 @@ import 'package:deux_mille_quarante_huit/const/colors.dart';
 import 'package:deux_mille_quarante_huit/widgets/board_widget.dart';
 import 'package:deux_mille_quarante_huit/widgets/score_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'models/score_model.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-      create: (context) => ScoreModel(), child: const MyApp()));
+  // Force portrait mode
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+      (value) => runApp(ChangeNotifierProvider(
+          create: (context) => ScoreModel(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
