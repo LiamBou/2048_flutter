@@ -46,20 +46,68 @@ class _BoardWidgetState extends State<BoardWidget> {
   }
 
   void _handleSwipe(String direction) {
+    if (_isNoMoreMovesPossible()) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Game Over!'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _resetBoard();
+                },
+              ),
+            ],
+          );
+        },
+      ).then((value) => _resetBoard());
+      return;
+    }
     // Handle the swipe in the specified direction
     if (direction == 'left') {
       _moveBasedOfDirection('left');
-      _addTwoOrFour();
     } else if (direction == 'right') {
       _moveBasedOfDirection('right');
-      _addTwoOrFour();
     } else if (direction == 'up') {
       _moveBasedOfDirection('up');
-      _addTwoOrFour();
     } else if (direction == 'down') {
       _moveBasedOfDirection('down');
-      _addTwoOrFour();
     }
+  }
+
+  bool _isNoMoreMovesPossible() {
+    for (int i = 0; i < 16; i++) {
+      if (board[i] == 0) {
+        return false;
+      }
+    }
+    for (int i = 0; i < 16; i++) {
+      if (i % 4 != 3 && board[i] == board[i + 1]) {
+        return false;
+      }
+      if (i < 12 && board[i] == board[i + 4]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _isBoardChanged(List<int> newBoard) {
+    for (int i = 0; i < 16; i++) {
+      if (board[i] != newBoard[i]) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void _moveBasedOfDirection(String direction) {
@@ -147,15 +195,29 @@ class _BoardWidgetState extends State<BoardWidget> {
           }
         }
       }
-
-      board = newBoard;
+      if (_isBoardChanged(newBoard)) {
+        board = newBoard;
+        _updateScoreAndBest();
+        _addTwoOrFour();
+      }
     });
+  }
+
+  // Add 10 points for each 2 added to the board and update the best score if needed
+  void _updateScoreAndBest() {
+    int score = Provider.of<ScoreModel>(context, listen: false).score;
+    int best = Provider.of<ScoreModel>(context, listen: false).best;
+    Provider.of<ScoreModel>(context, listen: false).updateScore(score + 10);
+    if (score + 10 > best) {
+      Provider.of<ScoreModel>(context, listen: false).updateBest(score + 10);
+    }
   }
 
   void _resetBoard() {
     setState(() {
       board = List<int>.filled(16, 0);
       _addTwoOrFour(2);
+      Provider.of<ScoreModel>(context, listen: false).resetScore();
     });
   }
 
@@ -173,31 +235,15 @@ class _BoardWidgetState extends State<BoardWidget> {
           onHorizontalDragEnd: (details) {
             if (details.primaryVelocity! > 0) {
               _handleSwipe('right');
-              scoreModel.updateScore(scoreModel.score + 10);
-              if (scoreModel.score > scoreModel.best) {
-                scoreModel.updateBest(scoreModel.score);
-              }
             } else if (details.primaryVelocity! < 0) {
               _handleSwipe('left');
-              scoreModel.updateScore(scoreModel.score + 10);
-              if (scoreModel.score > scoreModel.best) {
-                scoreModel.updateBest(scoreModel.score);
-              }
             }
           },
           onVerticalDragEnd: (details) {
             if (details.primaryVelocity! > 0) {
               _handleSwipe('down');
-              scoreModel.updateScore(scoreModel.score + 10);
-              if (scoreModel.score > scoreModel.best) {
-                scoreModel.updateBest(scoreModel.score);
-              }
             } else if (details.primaryVelocity! < 0) {
               _handleSwipe('up');
-              scoreModel.updateScore(scoreModel.score + 10);
-              if (scoreModel.score > scoreModel.best) {
-                scoreModel.updateBest(scoreModel.score);
-              }
             }
           },
           child: Container(
@@ -209,7 +255,6 @@ class _BoardWidgetState extends State<BoardWidget> {
                   child: ResetWidget(
                       resetGame: () => {
                             _resetBoard(),
-                            scoreModel.resetScore(),
                           }),
                 ),
                 Container(

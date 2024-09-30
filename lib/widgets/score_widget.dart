@@ -3,22 +3,17 @@ import 'package:deux_mille_quarante_huit/models/score_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ScoreWidget extends StatefulWidget {
+class ScoreWidget extends StatelessWidget {
   const ScoreWidget({super.key, required this.best});
 
   final bool best;
 
   @override
-  State<ScoreWidget> createState() => _ScoreWidgetState();
-}
-
-class _ScoreWidgetState extends State<ScoreWidget> {
-  @override
   Widget build(BuildContext context) {
     return Consumer<ScoreModel>(
       builder: (context, scoreModel, child) {
         return Container(
-          width: widget.best ? 150 : 140,
+          width: best ? 150 : 140,
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -28,7 +23,7 @@ class _ScoreWidgetState extends State<ScoreWidget> {
             child: Column(
               children: [
                 Text(
-                  widget.best ? 'Best Score :' : 'Score :',
+                  best ? 'Best Score :' : 'Score :',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -36,7 +31,7 @@ class _ScoreWidgetState extends State<ScoreWidget> {
                   ),
                 ),
                 Text(
-                  '${widget.best ? scoreModel.best : scoreModel.score}',
+                  '${best ? scoreModel.best : scoreModel.score}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
