@@ -11,8 +11,8 @@ This project is a Flutter implementation of the popular 2048 game. The game is b
 
 - Swipe to move tiles in four directions (up, down, left, right).
 - Combine tiles with the same number to create larger numbers.
-- Keep track of the current score and the best score using *Providers*.
-- Best score saved when app closed using *SharedPreferences*
+- Keep track of the current score and the best score using `Providers`.
+- Best score saved when app closed using `SharedPreferences`.
 - Reset the game to start over.
 
 ## Getting Started
