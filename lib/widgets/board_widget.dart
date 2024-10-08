@@ -207,9 +207,12 @@ class _BoardWidgetState extends State<BoardWidget> {
   void _updateScoreAndBest() {
     int score = Provider.of<ScoreModel>(context, listen: false).score;
     int best = Provider.of<ScoreModel>(context, listen: false).best;
-    Provider.of<ScoreModel>(context, listen: false).updateScore(score + 10);
-    if (score + 10 > best) {
-      Provider.of<ScoreModel>(context, listen: false).updateBest(score + 10);
+    // Calculate the new score (sum of all the values in the board)
+    int newScore =
+        board.fold(0, (previousValue, element) => previousValue + element) + 2;
+    Provider.of<ScoreModel>(context, listen: false).updateScore(newScore);
+    if (newScore > best) {
+      Provider.of<ScoreModel>(context, listen: false).updateBest(newScore);
     }
   }
 
